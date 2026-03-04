@@ -6,8 +6,8 @@ const userSchema = mongoose.Schema({
     email:{type:String,required:true},
     image:{type:String,required:true},
     role:{type:String, enum:["user","owner"], default:"user"},
-    recentSearchedCities:[{type:String,required:true}],
-},{timestamp:true});
+    recentSearchedCities:[{type:String,default:[]}],
+},{timestamps:true});
 
 
 const User= mongoose.model("User",userSchema);

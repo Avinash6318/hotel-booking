@@ -5,6 +5,7 @@ import {clerkMiddleware} from '@clerk/express'
 import connectDB from './configs/db.js'
 import clerkWebhooks from './controllers/ClerkWebhooks.js'
 import userRouter from './routes/userRouter.js'
+import hotelRouter from './routes/hotelRouter.js'
 
 
 
@@ -24,6 +25,7 @@ app.use(clerkMiddleware())
 app.use("/api/clerk", clerkWebhooks)
 
 app.use('/api/user',userRouter)
+app.use('/api/hotel',hotelRouter)
 
 
 // running server

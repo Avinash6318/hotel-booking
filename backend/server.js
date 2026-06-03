@@ -23,6 +23,7 @@ app.use(express.json())
 app.use(clerkMiddleware())
 
 //api to listen to clerk webhooks
+app.get('/', (req,res)=>{res.send("server is running")})
 app.post("/api/clerk", clerkWebhooks)
 
 app.use('/api/user',userRouter)

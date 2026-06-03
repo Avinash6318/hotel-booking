@@ -8,4 +8,9 @@ const hotelRouter= express.Router();
 hotelRouter.post("/",protect,registerHotel);
 
 
+hotelRouter.get("/test", (req, res) => {
+  res.json({ success: true, message: "Hotel router working" });
+});
+
+
 export default hotelRouter

@@ -1,7 +1,8 @@
 import React ,{useState,useEffect} from "react";
-import { Link, useLocation, useNavigate } from "react-router-dom";
+import { Link, useLocation } from "react-router-dom";
 import {assets} from "../assets/assets"
-import { useClerk, useUser, UserButton } from "@clerk/clerk-react";
+import { useClerk, UserButton } from "@clerk/clerk-react";
+import { useAppContext } from "../context/AppContext";
 const Navbar = () => {
     const navLinks = [
         { name: 'Home', path: '/' },
@@ -11,20 +12,18 @@ const Navbar = () => {
     ];
 
     const {openSignIn} =useClerk()
-    const {user} =useUser()
-    const navigate= useNavigate()
+    
     const location = useLocation()
    const BookIcon = ()=>(
     <svg className="w-4 h-4 text-gray-700" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24" >
-    <path stroke="currentColor" strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M5 19V4a1 1 0 0 1 1-1h12a1 1 0 0 1 1 1v13H7a2 2 0 0 0-2 2Zm0 0a2 2 0 0 0 2 2h12M9 3v14m7 0v4" />
-</svg>)
-
-
-
+     <path stroke="currentColor" strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M5 19V4a1 1 0 0 1 1-1h12a1 1 0 0 1 1 1v13H7a2 2 0 0 0-2 2Zm0 0a2 2 0 0 0 2 2h12M9 3v14m7 0v4" />
+    </svg>)
 
 
     const [isScrolled, setIsScrolled] = useState(false);
     const [isMenuOpen, setIsMenuOpen] = useState(false);
+
+    const {user, navigate, isOwner, setShowHotelReg} = useAppContext()
 
     useEffect(() => {
         if(location.pathname=='/'){
@@ -58,10 +57,10 @@ const Navbar = () => {
                             <div className={`${isScrolled ? "bg-gray-700" : "bg-white"} h-0.5 w-0 group-hover:w-full transition-all duration-300`} />
                         </a>
                     ))}
-                    <button onClick={()=>navigate('/owner')}
+                    {user && (<button onClick={()=> isOwner ? navigate('/owner') : setShowHotelReg(true)}
                      className={`border px-4 py-1 text-sm font-light rounded-full cursor-pointer ${isScrolled ? 'text-black' : 'text-white'} transition-all`}>
-                        dashboard
-                    </button>
+                      {isOwner ? 'Dashboard' : 'Register your Hotel'}
+                    </button>)}
                 </div>
 
                 {/* Desktop Right */}
@@ -104,9 +103,9 @@ const Navbar = () => {
                         </a>
                     ))}
 
-                    {user&&<button onClick={()=>navigate('/owner')}
+                    {user&&<button onClick={()=> isOwner ? navigate('/owner') : setShowHotelReg(true)}
                     className="border px-4 py-1 text-sm font-light rounded-full cursor-pointer transition-all">
-                        Dashboard
+                        {isOwner ? 'Dashboard' : 'Register your Hotel'}
                     </button>}
 
                     {!user&&<button onClick={openSignIn} className="bg-black text-white px-8 py-2.5 rounded-full transition-all duration-500">

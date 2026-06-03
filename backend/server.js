@@ -23,10 +23,10 @@ app.use(express.json())
 app.use(clerkMiddleware())
 
 //api to listen to clerk webhooks
-app.use("/api/clerk", clerkWebhooks)
+app.post("/api/clerk", clerkWebhooks)
 
 app.use('/api/user',userRouter)
-app.use('/api/hotel',hotelRouter)
+app.use('/api/hotels',hotelRouter)
 app.use('/api/rooms', roomRouter)
 
 

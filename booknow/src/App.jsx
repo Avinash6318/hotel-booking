@@ -10,6 +10,7 @@ import Layout from './pages/hotelOwner/Layout';
 import Dashboard from './pages/hotelOwner/Dashboard';
 import AddRoom from './pages/hotelOwner/AddRoom';
 import ListRoom from './pages/hotelOwner/ListRoom';
+import Footer from './components/Footer';
 
 
 const App = () => {
@@ -21,23 +22,22 @@ const App = () => {
     <div>
       
      {!isOwnerPath &&  <Navbar/>}
-     {false&&<HotelReg/>}
+     {false &&<HotelReg/>}
 
      <div className='min-h-[70vh]'>
       <Routes>
         <Route path='/' element={<HomePage/>} />
         <Route path='/rooms' element={<AllRooms/>}/>
         <Route path='/rooms/:id' element={<RoomDetails/>}/>
-        <Route path='/my-bookings' element={<MyBookings/>}/>
+        <Route path='/my-booking' element={<MyBookings/>}/>
         <Route path='/owner' element={<Layout/>}>
             <Route index element={<Dashboard/>}/>
             <Route path='add-room' element={<AddRoom/>}/>
             <Route path='list-room' element={<ListRoom/>}/>
         </Route>
-
       </Routes>
-
      </div>
+     <Footer/>
     </div>
   )
 }

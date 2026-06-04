@@ -27,7 +27,10 @@ const HotelReg = () => {
             toast.error(data.message)
          }
       }catch (error) {
-         toast.error(error.message)
+         
+            console.log("Backend Error:", error.response?.data);
+            toast.error(error.response?.data?.message || error.message);
+
       }
    }
 

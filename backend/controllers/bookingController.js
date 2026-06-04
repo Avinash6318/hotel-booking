@@ -1,5 +1,6 @@
-import Booking from "../model/Booking"
-import Room from "../model/Room";
+import Booking from "../model/Booking.js"
+import Hotel from "../model/Hotel.js";
+import Room from "../model/Room.js";
 
 //Function to chech availability of the room 
 const checkAvailability= async({checkInDate, checkOutDate,room})=>{
@@ -71,4 +72,23 @@ export const getuserBookings= async(req,res)=>{
     }
 }
 
-export const getHotelBookings= async(req)
+export const getHotelBookings= async (req,res) => {
+   try {
+     const hotel = await Hotel.findOne({owner: req.auth.userId});
+    if(!hotel){
+        return  res.json({success : false, message: "No Hotel Found"});
+    }
+
+    const bookings = (await Booking.find({hotel: hotel._id}).populate("room hotel user")).sort({createdAt : -1});
+
+    //Total bookins
+    const totalBookings = bookings.length;
+    // Total Revenue
+    const totalRevenue = bookings.reduce((acc,booking)=> acc + booking.totalPrice,0)
+
+    res.status(200).json({success:true, dashboardData: {totalBookings, totalRevenue, bookings}})
+    
+   } catch (error) {
+       res.status(400).json({success:false,message:"failed to fetch bookings"})
+   }
+}

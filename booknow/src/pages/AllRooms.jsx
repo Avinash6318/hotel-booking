@@ -2,6 +2,7 @@ import React, { useState } from 'react'
 import { assets, facilityIcons, roomsDummyData } from '../assets/assets'
 import {useNavigate} from 'react-router-dom'
 import StarRating from '../components/StarRating'
+import { useAppContext } from '../context/AppContext'
 
 const CheckBox = ({label, selected = false, onChange=()=>{ }})=>{
   return (
@@ -23,6 +24,8 @@ const RadioButton = ({label, selected = false, onChange=()=>{ }})=>{
 
 
 const AllRooms = () => {
+
+  const {axios,getToken} = useAppContext()
 
   const [openFilters, setOpenFilters] = useState(false)
   const navigate= useNavigate()

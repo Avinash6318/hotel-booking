@@ -4,8 +4,6 @@ import User from "../model/User.js";
 export const protect = async(req,res,next)=>{
    const { userId } = req.auth;
 
-    console.log("userId:", userId);
-
     if (!userId) {
         return res.status(401).json({
             success: false,
@@ -15,7 +13,6 @@ export const protect = async(req,res,next)=>{
 
     const user = await User.findById(userId);
 
-    console.log("user:", user);
 
     if (!user) {
         return res.status(404).json({

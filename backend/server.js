@@ -15,6 +15,7 @@ import bookingRouter from './routes/bookingRoutes.js'
 
 dotenv.config()
 
+
 connectCloudinary()
 connectDB()
 const app = express()

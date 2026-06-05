@@ -12,7 +12,7 @@ export const createRoom = async(req,res)=>{
         }
         // upload hotel image using clouinary
         const uploaImage= req.files.map(async(file)=>{
-            const response = cloudinary.uploader.upload(file.path);
+            const response = await cloudinary.uploader.upload(file.path);
             return response.secure_url;
         })
 

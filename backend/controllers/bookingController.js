@@ -1,3 +1,4 @@
+import transporter from "../configs/nodemmailer.js";
 import Booking from "../model/Booking.js"
 import Hotel from "../model/Hotel.js";
 import Room from "../model/Room.js";
@@ -52,11 +53,40 @@ export const createBooking= async(req,res)=>{
         const booking= await Booking.create({user,room,hotel:roomData.hotel._id, guests:+guests,
             checkInDate,checkOutDate,totalPrice
         })
+
+        const mailOptions = {
+            from : process.env.SENDER_EMAIL,
+            to : req.user.email,
+            subject : 'Hotel Booking Details',
+            html:`
+            <h2> Your Booking Details </h2>
+            <p> Dear ${req.user.username},</p>
+            <p> Thankyou for your booking! Here are your details: </p>
+            <ul>
+               <li><strong>Booking ID : </strong> ${booking._id}</li>
+               <li><strong>Hotel Name: </strong> ${roomData.hotel.name}</li>
+               <li><strong>Location : </strong> ${roomData.hotel.address}</li>
+               <li><strong>Date : </strong> ${booking.checkInDate.toDateString()}</li>
+               <li><strong>Booking Ammount : </strong> ${process.env.CURRENCY || '$'} ${booking.totalPrice}/night</li>
+            </ul>
+            <p> We look Forward to welcoming you!</p>
+            <p> If you need to make any changes, feel free to contact us.</p>
+            
+            `
+        }
+
+        await transporter.sendMail(mailOptions)
+
+
         res.status(200).json({success:true,message:"booking created successfully"})
         
     } catch (error) {
-        console.error(error)
-         res.status(400).json({success:false,message:error.message})
+       
+
+            res.status(400).json({
+                success: false,
+                message: error.message
+            });
     }
 }
 
@@ -65,7 +95,7 @@ export const createBooking= async(req,res)=>{
 export const getuserBookings= async(req,res)=>{
     try {
         const user = req.user._id;
-        const bookings= (await Booking.find({user}).populate("room hotel")).sort({createdAt:-1})
+        const bookings= await Booking.find({user}).populate("room hotel").sort({createdAt:-1})
         res.status(200).json({success:true,bookings})
     } catch (error) {
         res.status(400).json({success:false,message:error.message})
@@ -79,7 +109,7 @@ export const getHotelBookings= async (req,res) => {
         return  res.json({success : false, message: "No Hotel Found"});
     }
 
-    const bookings = (await Booking.find({hotel: hotel._id}).populate("room hotel user")).sort({createdAt : -1});
+    const bookings = await Booking.find({hotel: hotel._id}).populate("room hotel user").sort({createdAt : -1});
 
     //Total bookins
     const totalBookings = bookings.length;
@@ -89,6 +119,7 @@ export const getHotelBookings= async (req,res) => {
     res.status(200).json({success:true, dashboardData: {totalBookings, totalRevenue, bookings}})
     
    } catch (error) {
-       res.status(400).json({success:false,message:"failed to fetch bookings"})
+         console.error("GET HOTEL BOOKINGS ERROR:", error);
+        res.status(400).json({success: false, message: error.message});
    }
 }

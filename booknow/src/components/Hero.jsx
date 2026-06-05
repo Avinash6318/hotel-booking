@@ -27,7 +27,7 @@ const Hero = () => {
     }
   return (
     <div className='flex flex-col items-start justify-center px-6 md:px-16 lg:px-24 xl:px-32 text-white
-     bg-[url("C:\Users\DELL\Desktop\hotel-booking\booknow\src\assets\heroImage.png")] bg-no-repeat bg-cover bg-center h-screen'>
+     bg-[url("/Hero-wallpaper.jpg")] bg-no-repeat bg-cover bg-center h-screen'>
         <p className='bg-[#49b9ff]/50 px-3.5 py-1 rounded-full mt-20'>
             The ultimate Hotel Experience
         </p>

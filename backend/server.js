@@ -9,6 +9,7 @@ import hotelRouter from './routes/hotelRouter.js'
 import roomRouter from './routes/roomRoutes.js'
 import connectCloudinary from './configs/cloudinary.js'
 import bookingRouter from './routes/bookingRoutes.js'
+import { stripeWebhooks } from './controllers/stripeWebhooks.js'
 
 
 
@@ -22,6 +23,9 @@ const app = express()
 
 app.use(cors())
 const Port = process.env.PORT
+
+//API to listen to stripe wwebhooks
+app.post('/api/stripe', express.raw({type: "application/json"}), stripeWebhooks);
 
 //middlewares
 app.use(express.json())

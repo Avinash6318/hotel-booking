@@ -21,7 +21,13 @@ connectCloudinary()
 connectDB()
 const app = express()
 
-app.use(cors())
+app.use(cors({
+  origin: [
+    "http://localhost:5173",
+    "https://booknow-two.vercel.app"
+  ],
+  credentials: true
+}));
 const Port = process.env.PORT
 
 //API to listen to stripe wwebhooks

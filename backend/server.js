@@ -15,11 +15,12 @@ import { stripeWebhooks } from './controllers/stripeWebhooks.js'
 
 
 dotenv.config()
+const app = express()
 
 
 connectCloudinary()
 connectDB()
-const app = express()
+
 
 app.use(cors({
   origin: [
@@ -28,7 +29,7 @@ app.use(cors({
   ],
   credentials: true
 }));
-const Port = process.env.PORT
+// const Port = process.env.PORT
 
 //API to listen to stripe wwebhooks
 app.post('/api/stripe', express.raw({type: "application/json"}), stripeWebhooks);
@@ -48,8 +49,9 @@ app.use('/api/bookings', bookingRouter)
 
 
 // running server
-app.listen(Port, ()=>{
-    console.log(`server running successfully on ${Port}`)
-})
+// app.listen(Port, ()=>{
+//     console.log(`server running successfully on ${Port}`)
+// })
+export default app;
 
 //console.log(process.env)

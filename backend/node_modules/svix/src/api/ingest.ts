@@ -28,9 +28,9 @@ export class Ingest {
   }
 
   /** Get access to the Ingest Source Consumer Portal. */
-  public dashboard(
+  public async dashboard(
     sourceId: string,
-    ingestSourceConsumerPortalAccessIn: IngestSourceConsumerPortalAccessIn,
+    ingestSourceConsumerPortalAccessIn: IngestSourceConsumerPortalAccessIn = {},
     options?: IngestDashboardOptions
   ): Promise<DashboardAccessOut> {
     const request = new SvixRequest(
@@ -46,6 +46,9 @@ export class Ingest {
       )
     );
 
-    return request.send(this.requestCtx, DashboardAccessOutSerializer._fromJsonObject);
+    return await request.send(
+      this.requestCtx,
+      DashboardAccessOutSerializer._fromJsonObject
+    );
   }
 }

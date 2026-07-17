@@ -11,10 +11,6 @@ import {
 import { type EventStreamOut, EventStreamOutSerializer } from "../models/eventStreamOut";
 import { HttpMethod, SvixRequest, type SvixRequestContext } from "../request";
 
-export interface StreamingEventsCreateOptions {
-  idempotencyKey?: string;
-}
-
 export interface StreamingEventsGetOptions {
   /** Limit the number of returned items */
   limit?: number;
@@ -23,30 +19,19 @@ export interface StreamingEventsGetOptions {
   after?: Date | null;
 }
 
+export interface StreamingEventsCreateOptions {
+  idempotencyKey?: string;
+}
+
 export class StreamingEvents {
   public constructor(private readonly requestCtx: SvixRequestContext) {}
-
-  /** Creates events on the Stream. */
-  public create(
-    streamId: string,
-    createStreamEventsIn: CreateStreamEventsIn,
-    options?: StreamingEventsCreateOptions
-  ): Promise<CreateStreamEventsOut> {
-    const request = new SvixRequest(HttpMethod.POST, "/api/v1/stream/{stream_id}/events");
-
-    request.setPathParam("stream_id", streamId);
-    request.setHeaderParam("idempotency-key", options?.idempotencyKey);
-    request.setBody(CreateStreamEventsInSerializer._toJsonObject(createStreamEventsIn));
-
-    return request.send(this.requestCtx, CreateStreamEventsOutSerializer._fromJsonObject);
-  }
 
   /**
    * Iterate over a stream of events.
    *
    * The sink must be of type `poller` to use the poller endpoint.
    */
-  public get(
+  public async get(
     streamId: string,
     sinkId: string,
     options?: StreamingEventsGetOptions
@@ -64,6 +49,24 @@ export class StreamingEvents {
       after: options?.after,
     });
 
-    return request.send(this.requestCtx, EventStreamOutSerializer._fromJsonObject);
+    return await request.send(this.requestCtx, EventStreamOutSerializer._fromJsonObject);
+  }
+
+  /** Creates events on the Stream. */
+  public async create(
+    streamId: string,
+    createStreamEventsIn: CreateStreamEventsIn,
+    options?: StreamingEventsCreateOptions
+  ): Promise<CreateStreamEventsOut> {
+    const request = new SvixRequest(HttpMethod.POST, "/api/v1/stream/{stream_id}/events");
+
+    request.setPathParam("stream_id", streamId);
+    request.setHeaderParam("idempotency-key", options?.idempotencyKey);
+    request.setBody(CreateStreamEventsInSerializer._toJsonObject(createStreamEventsIn));
+
+    return await request.send(
+      this.requestCtx,
+      CreateStreamEventsOutSerializer._fromJsonObject
+    );
   }
 }

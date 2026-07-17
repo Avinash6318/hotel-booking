@@ -26,6 +26,10 @@ export interface MessagePollerPollOptions {
   after?: Date | null;
 }
 
+export interface MessagePollerConsumerSeekOptions {
+  idempotencyKey?: string;
+}
+
 export interface MessagePollerConsumerPollOptions {
   /** Limit the number of returned items */
   limit?: number;
@@ -33,15 +37,11 @@ export interface MessagePollerConsumerPollOptions {
   iterator?: string | null;
 }
 
-export interface MessagePollerConsumerSeekOptions {
-  idempotencyKey?: string;
-}
-
 export class MessagePoller {
   public constructor(private readonly requestCtx: SvixRequestContext) {}
 
   /** Reads the stream of created messages for an application, filtered on the Sink's event types and Channels. */
-  public poll(
+  public async poll(
     appId: string,
     sinkId: string,
     options?: MessagePollerPollOptions
@@ -61,37 +61,14 @@ export class MessagePoller {
       after: options?.after,
     });
 
-    return request.send(this.requestCtx, PollingEndpointOutSerializer._fromJsonObject);
-  }
-
-  /**
-   * Reads the stream of created messages for an application, filtered on the Sink's event types and
-   * Channels, using server-managed iterator tracking.
-   */
-  public consumerPoll(
-    appId: string,
-    sinkId: string,
-    consumerId: string,
-    options?: MessagePollerConsumerPollOptions
-  ): Promise<PollingEndpointOut> {
-    const request = new SvixRequest(
-      HttpMethod.GET,
-      "/api/v1/app/{app_id}/poller/{sink_id}/consumer/{consumer_id}"
+    return await request.send(
+      this.requestCtx,
+      PollingEndpointOutSerializer._fromJsonObject
     );
-
-    request.setPathParam("app_id", appId);
-    request.setPathParam("sink_id", sinkId);
-    request.setPathParam("consumer_id", consumerId);
-    request.setQueryParams({
-      limit: options?.limit,
-      iterator: options?.iterator,
-    });
-
-    return request.send(this.requestCtx, PollingEndpointOutSerializer._fromJsonObject);
   }
 
   /** Sets the starting offset for the consumer of a polling endpoint. */
-  public consumerSeek(
+  public async consumerSeek(
     appId: string,
     sinkId: string,
     consumerId: string,
@@ -111,9 +88,38 @@ export class MessagePoller {
       PollingEndpointConsumerSeekInSerializer._toJsonObject(pollingEndpointConsumerSeekIn)
     );
 
-    return request.send(
+    return await request.send(
       this.requestCtx,
       PollingEndpointConsumerSeekOutSerializer._fromJsonObject
+    );
+  }
+
+  /**
+   * Reads the stream of created messages for an application, filtered on the Sink's event types and
+   * Channels, using server-managed iterator tracking.
+   */
+  public async consumerPoll(
+    appId: string,
+    sinkId: string,
+    consumerId: string,
+    options?: MessagePollerConsumerPollOptions
+  ): Promise<PollingEndpointOut> {
+    const request = new SvixRequest(
+      HttpMethod.GET,
+      "/api/v1/app/{app_id}/poller/{sink_id}/consumer/{consumer_id}"
+    );
+
+    request.setPathParam("app_id", appId);
+    request.setPathParam("sink_id", sinkId);
+    request.setPathParam("consumer_id", consumerId);
+    request.setQueryParams({
+      limit: options?.limit,
+      iterator: options?.iterator,
+    });
+
+    return await request.send(
+      this.requestCtx,
+      PollingEndpointOutSerializer._fromJsonObject
     );
   }
 }

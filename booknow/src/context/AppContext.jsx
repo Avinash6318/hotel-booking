@@ -35,7 +35,7 @@ export const AppProvider = ({children})=>{
         }
     }
 
-    const fetchUser = async () => {
+     const fetchUser = async () => {
         try {
            const {data}= await axios.get('/api/user', {headers : {Authorization :`Bearer ${await getToken()}`}})
            if(data.success){
@@ -43,14 +43,46 @@ export const AppProvider = ({children})=>{
             setSearchedCities(data.recentSearchedCities)
            }else{
             //Retry Fetching User Details after 5 seconds
-            setTimeout(()=>{
+             setTimeout(()=>{
                 fetchUser()
-            },5000)
-           }
+          },5000)
+         }
         } catch (error) {
-            toast.error(error.message)
-        }  
+             toast.error(error.message)
+         }  
     }
+//     const fetchUser = async () => {
+//     try {
+
+//        const token = await getToken();
+
+//        console.log("TOKEN:", token);
+
+//        const test = await axios.get('/api/user/test', {
+//           headers:{
+//              Authorization:`Bearer ${token}`
+//           }
+//        });
+
+//        console.log("TEST RESPONSE:", test.data);
+
+
+//        const {data}= await axios.get('/api/user', {
+//           headers:{
+//              Authorization:`Bearer ${token}`
+//           }
+//        });
+
+//        if(data.success){
+//           setIsOwner(data.role === "owner");
+//           setSearchedCities(data.recentSearchedCities);
+//        }
+
+//     } catch(error){
+//        console.log(error);
+//        toast.error(error.message);
+//     }
+//  }
 
     useEffect(()=>{
         if(user){

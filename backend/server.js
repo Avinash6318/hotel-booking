@@ -34,12 +34,14 @@ app.use(cors({
 //API to listen to stripe wwebhooks
 app.post('/api/stripe', express.raw({type: "application/json"}), stripeWebhooks);
 
+
 //middlewares
 app.use(express.json())
 app.use(clerkMiddleware())
 
 //api to listen to clerk webhooks
 app.get('/', (req,res)=>{res.send("server is running")})
+
 app.post("/api/clerk", clerkWebhooks)
 
 app.use('/api/user',userRouter)
@@ -49,9 +51,9 @@ app.use('/api/bookings', bookingRouter)
 
 
 // running server
-// app.listen(Port, ()=>{
+//  app.listen(Port, ()=>{
 //     console.log(`server running successfully on ${Port}`)
 // })
-export default app;
+ export default app;
 
 //console.log(process.env)

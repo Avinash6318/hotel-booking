@@ -59,12 +59,12 @@ A full-stack hotel booking application built with the MERN stack. The platform a
 ```text
 Hotel Booking Platform
 │
-├── Frontend
+├── booknow
 │   ├── React.js
 │   ├── Vite
 │   └── Clerk Authentication
 │
-├── Backend
+├── backend
 │   ├── Node.js
 │   ├── Express.js
 │   ├── REST APIs
